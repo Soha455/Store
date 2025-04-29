@@ -3,6 +3,11 @@ using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Data;
+using Services;
+using ServicesAbstractions;
+
+// BCZ There are two AssemblyReference classes in presistence and Services
+using AssemblyMapping = Services.AssemblyReference;
 
 namespace Store.Api
 {
@@ -25,6 +30,9 @@ namespace Store.Api
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
             builder.Services.AddScoped<IDbInitializer,DbInitializer>();    // Allow DI for DbInitializer
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IServiceManager, ServiceManager>();
+            builder.Services.AddAutoMapper(typeof(AssemblyMapping).Assembly);
 
             var app = builder.Build();
 
