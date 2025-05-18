@@ -21,12 +21,21 @@ namespace Persistence
         {
             var query = inputQuery;
 
-            // Where 
+            // >>>>>>> Where 
             if (spec.Criteria is not null)
                 query = query.Where(spec.Criteria);
 
-            // Include
+
+            // >>>>>>> Order By
+            if (spec.OrderBy is not null)
+                query = query.OrderBy(spec.OrderBy);
+            else if (spec.OrderByDescending is not null)
+                query = query.OrderByDescending(spec.OrderByDescending);
+
+
+            // >>>>>>> Include
             query = spec.IncludeExpressions.Aggregate(query, (currentQuery ,IncludeExpression) => currentQuery.Include(IncludeExpression));
+
 
             return query;
         }
