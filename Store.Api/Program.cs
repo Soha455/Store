@@ -51,10 +51,11 @@ namespace Store.Api
                 app.UseSwaggerUI();
             }
 
+            app.UseStaticFiles();         // For Rendering Static Files images,Videos,CSS,JavaScript,HTML 
+
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

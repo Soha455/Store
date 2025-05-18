@@ -16,7 +16,7 @@ namespace Presentation
         // endPoint : public non static method
 
         [HttpGet] // Get: api/Products
-        public async Task<IActionResult> GetAllProductsAsync()
+        public async Task<IActionResult> GetAllProducts()
         {
             var result = await serviceManager.ProductService.GetAllProductsAsync();
             if (result is null) return BadRequest();  //400 
@@ -30,5 +30,21 @@ namespace Presentation
             if (result is null) return NotFound();  //404 
             return Ok(result); //200
         }
+
+        [HttpGet("brands")]  // Get: api/Products/brands
+        public async Task<IActionResult> GetAllBrands()
+        {
+            var result = await serviceManager.ProductService.GetAllBrandsAsync();
+            if (result is null) return BadRequest();  //400 
+            return Ok(result); //200
+        }
+
+        [HttpGet("types")]   // Get: api/Products/types
+        public async Task<IActionResult> GetAllTypes()
+        { 
+            var result = await serviceManager.ProductService.GetAllTypessAsync();
+            if (result is null) return BadRequest(); return Ok(result);
+        }
+
     }
 }
