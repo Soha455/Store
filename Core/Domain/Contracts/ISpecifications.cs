@@ -11,8 +11,12 @@ namespace Domain.Contracts
 {
     public interface ISpecifications<TEntity, TKey> where TEntity : BaseEntity<TKey>
     {
-        Expression<Func<TEntity, bool>>? Criteria { get; set; }
-        List<Expression<Func<TEntity, object>>> IncludeExpressions { get; set; }
+        Expression<Func<TEntity, bool>>? Criteria { get; set; }                            // Where
+        List<Expression<Func<TEntity, object>>> IncludeExpressions { get; set; }           // Include
+
+        Expression<Func<TEntity, Object>>? OrderBy { get; set; }                           // Order By
+        Expression<Func<TEntity, Object>>? OrderByDescending { get; set; }                 // Order By Descending
+
 
 
     }
