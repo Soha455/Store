@@ -15,8 +15,10 @@ namespace Services.Specifications
        
         public ProductWithBrandsAndTypesSpecsifications(ProductSpecificationParameters specParams)    // Get All Products
             : base(
-                    P => 
-                    (!specParams.BrandId.HasValue || P.BrandId == specParams.BrandId ) &&  (!specParams.TypeId.HasValue || P.TypeId == specParams.TypeId)
+                    P =>
+                    (string.IsNullOrEmpty(specParams.Search) || P.Name.ToLower().Contains(specParams.Search.ToLower())) &&
+                    (!specParams.BrandId.HasValue || P.BrandId == specParams.BrandId ) &&
+                    (!specParams.TypeId.HasValue || P.TypeId == specParams.TypeId)
                   )
         {
             AppluIncludes();
