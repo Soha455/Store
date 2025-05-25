@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ServicesAbstractions;
+using Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +16,12 @@ namespace Presentation
     {
         // endPoint : public non static method
         // sort : nameasc [default] || namedescending || priceasc || pricedescending
+        // [FromQuery] : to stop 415 error as we tell him take the parameter of the function and class from the query
 
         [HttpGet] // Get: api/Products
-        public async Task<IActionResult> GetAllProducts(int? brandId ,int? typeId, string? sort)
-        {
-            var result = await serviceManager.ProductService.GetAllProductsAsync(brandId,typeId,sort);
+        public async Task<IActionResult> GetAllProducts( [FromQuery] ProductSpecificationParameters specParams)
+        { 
+            var result = await serviceManager.ProductService.GetAllProductsAsync(specParams);
             if (result is null) return BadRequest();  //400 
             return Ok(result); //200
         }
