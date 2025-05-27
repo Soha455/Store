@@ -5,6 +5,8 @@ using Persistence;
 using Persistence.Data;
 using Services;
 using ServicesAbstractions;
+using Store.Api.Middlewares;
+
 
 // BCZ There are two AssemblyReference classes in presistence and Services
 using AssemblyMapping = Services.AssemblyReference;
@@ -43,6 +45,8 @@ namespace Store.Api
             await dbInitalizer.InitializeAsync();
 
             #endregion
+
+            app.UseMiddleware<GlobalErrorHandelingMiddleware>();         // Configuring the Errors Middleware 
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
