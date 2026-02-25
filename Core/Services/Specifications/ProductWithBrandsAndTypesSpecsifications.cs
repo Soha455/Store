@@ -21,7 +21,7 @@ namespace Services.Specifications
                     (!specParams.TypeId.HasValue || P.TypeId == specParams.TypeId)
                   )
         {
-            AppluIncludes();
+            ApplyIncludes();
 
             ApplySorting(specParams.Sort);
 
@@ -30,10 +30,10 @@ namespace Services.Specifications
 
         public ProductWithBrandsAndTypesSpecsifications(int id) : base(P => P.Id ==id)  // Get Product
         {
-            AppluIncludes();
+            ApplyIncludes();
         }
 
-        private void AppluIncludes()
+        private void ApplyIncludes()
         {
             AddInclude(P => P.ProductBrand);
             AddInclude(P => P.ProductType);

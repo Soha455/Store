@@ -24,20 +24,21 @@ namespace Store.Api.Middlewares
                 // Log Exception
                 _logger.LogError(ex,ex.Message);
 
-                // 1.Set Response Status Code
+                // 1.Set Status Code
+                // 2.Set Content Type
+                // 3.Set body (Response Object)
+                // 4.Return Response 
+
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
-                // 2.Set Response Content Type
                 context.Response.ContentType = "application/json";
 
-                // 3.Set Response Object (body)
                 var response = new ErrorDetails()
-                {
+                { 
                     StatusCode = StatusCodes.Status500InternalServerError,
                     ErrorMessage = ex.Message
                 };
 
-                // 4.Return Response 
                 await context.Response.WriteAsJsonAsync(response);
 
             }

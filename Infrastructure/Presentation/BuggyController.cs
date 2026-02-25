@@ -18,30 +18,34 @@ namespace Presentation
             return NotFound();   // 404
         }
 
+
         
-        [HttpGet("servererror")]  // Get: /api/Buggy/servererror
+        [HttpGet(template: "servererror")]  // Get: /api/Buggy/servererror
         public IActionResult GetServerErrorRequest()
         {
             throw new Exception(); // 500
             return Ok(); // 200
         }
 
+
         
-        [HttpGet("badrequest")]  // Get: /api/Buggy/badrequest
+        [HttpGet(template: "badrequest")]  // Get: /api/Buggy/badrequest
         public IActionResult GetBadRequest()
         {
             return BadRequest();   // 400
         }
 
         
-        [HttpGet("badrequest/{id}")]  // Get: /api/Buggy/badrequest/ahmed       ,Validation Error
+
+        [HttpGet(template: "badrequest/{id}")]  // Get: /api/Buggy/badrequest/ahmed       ,Validation Error
         public IActionResult GetBadRequest(int id)
         {
             return BadRequest();   // 400
         }
 
+
         
-        [HttpGet("unauthorized")]  // Get: /api/Buggy/unauthorized
+        [HttpGet(template: "unauthorized")]  // Get: /api/Buggy/unauthorized
         public IActionResult GetUnauthorizedRequest()
         {
             return Unauthorized();   // 401
