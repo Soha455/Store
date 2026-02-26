@@ -49,7 +49,8 @@ namespace Presentation
         public async Task<IActionResult> GetAllTypes()
         { 
             var result = await serviceManager.ProductService.GetAllTypessAsync();
-            if (result is null) return BadRequest(); return Ok(result);
+            if (result is null) return BadRequest();
+            return Ok(result);
         }
 
     }
