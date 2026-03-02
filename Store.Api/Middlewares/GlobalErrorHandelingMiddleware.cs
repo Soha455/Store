@@ -1,4 +1,5 @@
-﻿using Shared.ErrorModels;
+﻿using Domain.Exceptions;
+using Shared.ErrorModels;
 
 namespace Store.Api.Middlewares
 {
@@ -17,33 +18,59 @@ namespace Store.Api.Middlewares
         {
             try 
             {
-                await _next(context);
+                await _next.Invoke(context);
+                if (context.Response.StatusCode == StatusCodes.Status404NotFound)   // Empty body & statuscode=404 so notfound endpoint  request & response without exception
+                {
+                    await HandlingNotFoundEndPointAsync(context);
+                }
             }
-            catch(Exception ex) 
+            catch(Exception ex)
             {
                 // Log Exception
-                _logger.LogError(ex,ex.Message);
-
-                // 1.Set Status Code
-                // 2.Set Content Type
-                // 3.Set body (Response Object)
-                // 4.Return Response 
-
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-
-                context.Response.ContentType = "application/json";
-
-                var response = new ErrorDetails()
-                { 
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    ErrorMessage = ex.Message
-                };
-
-                await context.Response.WriteAsJsonAsync(response);
+                _logger.LogError(ex, ex.Message);
+                await HandlingErrorAsync(context, ex);
 
             }
         }
 
+        private static async Task HandlingErrorAsync(HttpContext context, Exception ex)
+        {
+            // 1.Set Status Code
+            // 2.Set Content Type
+            // 3.Set body (Response Object)
+            // 4.Return Response 
+
+            //context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+            context.Response.ContentType = "application/json";
+
+            var response = new ErrorDetails()
+            {
+                ErrorMessage = ex.Message
+            };
+
+
+            response.StatusCode = ex switch
+            {
+                NotFoundException => StatusCodes.Status404NotFound,
+                _ => StatusCodes.Status500InternalServerError
+            };
+
+            context.Response.StatusCode = response.StatusCode;
+
+            await context.Response.WriteAsJsonAsync(response);
+        }
+
+        private static async Task HandlingNotFoundEndPointAsync(HttpContext context)
+        {
+            var response = new ErrorDetails()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                ErrorMessage = $"End Point {context.Request.Path} is not Found !!"
+            };
+
+            await context.Response.WriteAsJsonAsync(response);
+        }
     }
 }
 

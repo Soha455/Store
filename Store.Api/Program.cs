@@ -1,11 +1,17 @@
 
 using Domain.Contracts;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Persistence;
 using Persistence.Data;
 using Services;
 using ServicesAbstractions;
+using Shared.ErrorModels;
+using Store.Api.Extenstions;
 using Store.Api.Middlewares;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 
 // BCZ There are two AssemblyReference classes in presistence and Services
@@ -19,49 +25,17 @@ namespace Store.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Before Build configure services
             // Add services to the container.
 
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
-            builder.Services.AddDbContext<StoreDbContext>(options =>
-            {
-                //options.UseSqlServer(builder.Configuration["ConnectionStrings:DefaultConnection"]);
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-            });
-            builder.Services.AddScoped<IDbInitializer,DbInitializer>();    // Allow DI for DbInitializer
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddScoped<IServiceManager, ServiceManager>();
-            builder.Services.AddAutoMapper(typeof(AssemblyMapping).Assembly);
+            builder.Services.RegisterAllServices(builder.Configuration);
 
             var app = builder.Build();
-
-            #region Data Seeding
-
-            using var Scope = app.Services.CreateScope();
-            var dbInitalizer = Scope.ServiceProvider.GetRequiredService<IDbInitializer>();  // Ask CLR to create object from IDbInitializer not from its constructor
-            await dbInitalizer.InitializeAsync();
-
-            #endregion
-
-            app.UseMiddleware<GlobalErrorHandelingMiddleware>();         // Configuring the Errors Middleware 
-
+            
+            // After Build configure Middlewares
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
 
-            app.UseStaticFiles();         // For Rendering Static Files images,Videos,CSS,JavaScript,HTML 
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-            app.MapControllers();
+            await app.CofigureMiddlewares();
 
             app.Run();
         }
